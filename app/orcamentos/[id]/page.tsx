@@ -72,6 +72,15 @@ export default async function QuoteDetail({ params, searchParams }: { params: Pr
 
       <div className="quote-detail">
         <main>
+          {/* Mostra o documento como o cliente recebe: rascunho = prévia sem validade; finalizado = PDF guardado. */}
+          <article className="panel pdf-preview">
+            <div className="section-label">
+              <h2>{status === "draft" ? "Prévia do PDF" : "PDF do orçamento"}</h2>
+              <a className="back" href={`/api/orcamentos/${id}/pdf`} target="_blank" rel="noopener">Abrir em tela cheia ↗</a>
+            </div>
+            <iframe src={`/api/orcamentos/${id}/pdf#navpanes=0&view=FitH`} title={`PDF de ${quoteLabel(quote)}`} loading="lazy" />
+            <a className="secondary-action pdf-mobile-link" href={`/api/orcamentos/${id}/pdf`} target="_blank" rel="noopener">Abrir PDF</a>
+          </article>
           <article className="panel">
             <h2>Cliente</h2>
             <strong>{client?.company_name}</strong>
