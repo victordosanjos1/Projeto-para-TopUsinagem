@@ -2,8 +2,40 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/browser";
-export default function Home() {
-  const [email, setEmail] = useState(""); const [password, setPassword] = useState(""); const [message, setMessage] = useState(""); const [loading, setLoading] = useState(false); const router = useRouter();
-  async function signIn() { setLoading(true); setMessage(""); const { error } = await createClient().auth.signInWithPassword({ email, password }); if (error) { setMessage("Nao foi possivel entrar. Confira e-mail e senha."); setLoading(false); return; } router.push("/dashboard"); router.refresh(); }
-  return <main className="login"><section className="login-card"><img src="/logo-top-usinagem.png" alt="TOP Usinagem" /><h1>Sistema interno</h1><p>Gestao de clientes e orcamentos.</p><label>E-mail de acesso<input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="voce@topusinagem.com" /></label><label>Senha<input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Sua senha" /></label>{message && <p className="form-error">{message}</p>}<button disabled={loading} onClick={signIn}>{loading ? "Entrando..." : "Entrar"}</button><small>O acesso sera liberado apenas por convite da administracao.</small></section></main>;
+
+export default function Login() {
+  const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+
+  async function signIn(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const form = new FormData(event.currentTarget);
+    setLoading(true);
+    setMessage("");
+    const { error } = await createClient().auth.signInWithPassword({ email: String(form.get("email")).trim(), password: String(form.get("password")) });
+    if (error) {
+      setMessage(/rate|too many/i.test(error.message) ? "Muitas tentativas. Aguarde alguns minutos e tente de novo." : "Não foi possível entrar. Confira o e-mail e a senha.");
+      setLoading(false);
+      return;
+    }
+    router.replace("/dashboard");
+    router.refresh();
+  }
+
+  return (
+    <main className="login">
+      <form className="login-card" onSubmit={signIn}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/logo-top-usinagem.png" alt="TOP Usinagem" />
+        <h1>Sistema interno</h1>
+        <p>Gestão de clientes e orçamentos.</p>
+        <label>E-mail de acesso<input name="email" type="email" required autoComplete="username" autoFocus placeholder="voce@topusinagem.com" /></label>
+        <label>Senha<input name="password" type="password" required autoComplete="current-password" placeholder="Sua senha" /></label>
+        {message && <p className="form-error" role="alert">{message}</p>}
+        <button disabled={loading}>{loading ? "Entrando..." : "Entrar"}</button>
+        <small>O acesso é liberado apenas por convite da administração.</small>
+      </form>
+    </main>
+  );
 }

@@ -17,7 +17,7 @@ type Preview = ReturnType<typeof computeTotals> & {
 };
 const decimalText = (n: number | undefined) => (n ? n.toFixed(2).replace(".", ",") : "0,00");
 
-export function QuoteEditor({ clients, action, initial }: { clients: Client[]; action: (data: FormData) => void | Promise<void>; initial?: QuoteDraft }) {
+export function QuoteEditor({ clients, action, initial, defaultClientId }: { clients: Client[]; action: (data: FormData) => void | Promise<void>; initial?: QuoteDraft; defaultClientId?: string }) {
   const ref = useRef<HTMLFormElement>(null);
   const [preview, setPreview] = useState<Preview | null>(null);
   const [freightMode, setFreightMode] = useState(initial?.freight ?? "cif");
@@ -55,7 +55,7 @@ export function QuoteEditor({ clients, action, initial }: { clients: Client[]; a
                 <p><strong>{initial.title}</strong><br /><small className="muted">O cliente não muda depois que o orçamento tem número.</small></p>
               ) : (
                 <label>Selecionar cliente *
-                  <select name="client_id" required defaultValue={initial?.client_id ?? ""}>
+                  <select name="client_id" required defaultValue={initial?.client_id ?? defaultClientId ?? ""}>
                     <option value="">Selecione</option>
                     {clients.map(c => <option key={c.id} value={c.id}>{c.company_name}</option>)}
                   </select>
@@ -123,6 +123,7 @@ export function QuoteEditor({ clients, action, initial }: { clients: Client[]; a
             </div>
             <article className="document-preview">
               <header>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src="/logo-top-usinagem.png" alt="TOP Usinagem" />
                 <p><strong>TOP USINAGEM - Eletroerosão a Fio Ltda.</strong><br />Rua Dona Francisca, N° 11179, Distrito Industrial Norte - Joinville - SC<br />CEP: 89219-615 · Fone: (47) 3435-2683 · top@topusinagem.com<br />CNPJ: 10.481.458/0001-63 · Inscrição Estadual: 25.610.677-0</p>
               </header>

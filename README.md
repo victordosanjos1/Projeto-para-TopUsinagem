@@ -20,4 +20,4 @@ Sistema interno de clientes e orçamentos, feito com Next.js, TypeScript e Supab
 
 ## Variáveis de ambiente
 
-Consulte `.env.example`. A `SUPABASE_SECRET_KEY` é usada exclusivamente no servidor para armazenar os PDFs no bucket privado. Nunca a exponha com o prefixo `NEXT_PUBLIC_`.
+Consulte `.env.example`. O sistema não precisa da chave secreta do Supabase: os PDFs são guardados com a sessão do usuário logado, protegidos pelas políticas do bucket privado. O envio de e-mail só acontece com `EMAIL_SENDING_ENABLED=true`.

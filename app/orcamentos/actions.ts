@@ -2,7 +2,7 @@
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
-import { makeQuotePdf, uploadQuotePdf } from "@/lib/quote-pdf";
+import { downloadQuotePdf, makeQuotePdf, uploadQuotePdf } from "@/lib/quote-pdf";
 import { sendQuoteEmail } from "@/lib/email";
 import { computeTotals, lineSubtotal, parseDecimal, type QuoteItemInput } from "@/lib/quote-math";
 
@@ -121,13 +121,20 @@ export async function finalizeDraft(form: FormData) {
 
   let failure: string | null = null;
   try {
-    const pdf = await makeQuotePdf(quote);
-    const pdfPath = await uploadQuotePdf(quote, pdf);
-    await s.from("quotes").update({ pdf_path: pdfPath }).eq("id", id);
+    // O PDF é gerado uma única vez, na finalização. Reenvios usam o mesmo arquivo guardado.
+    let pdf: Buffer;
+    if (quote!.pdf_path) pdf = await downloadQuotePdf(s, quote!.pdf_path);
+    else {
+      pdf = await makeQuotePdf(quote);
+      const pdfPath = await uploadQuotePdf(s, quote, pdf);
+      await s.from("quotes").update({ pdf_path: pdfPath }).eq("id", id);
+    }
     const sent = await sendQuoteEmail({ recipients, quote, pdf });
     await s.from("quotes").update({ status: "sent", sent_at: new Date().toISOString() }).eq("id", id);
-    await s.from("quote_delivery_log").insert(recipients.map(recipient => ({ quote_id: id, recipient, provider_message_id: sent.messageId, status: "accepted" })));
-    await audit("sent", id, { recipients });
+    await s.from("quote_delivery_log").insert(recipients.map(recipient => sent.rejected.includes(recipient)
+      ? { quote_id: id, recipient, provider_message_id: sent.messageId, status: "failed", error_message: "Destinatário recusado pelo servidor de e-mail" }
+      : { quote_id: id, recipient, provider_message_id: sent.messageId, status: "accepted" }));
+    await audit("sent", id, { recipients, rejected: sent.rejected });
   } catch (cause) {
     failure = cause instanceof Error ? cause.message : "Falha desconhecida";
     await s.from("quotes").update({ status: "send_failed" }).eq("id", id);

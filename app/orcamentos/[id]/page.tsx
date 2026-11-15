@@ -53,7 +53,9 @@ export default async function QuoteDetail({ params, searchParams }: { params: Pr
         </div>
         <div className="detail-actions">
           {status === "draft" && <Link className="primary-action" href={`/orcamentos/${id}/editar`}>Editar</Link>}
-          {quote.pdf_path && <a className="secondary-action" href={`/api/orcamentos/${id}/pdf`}>Baixar PDF</a>}
+          {quote.pdf_path
+            ? <a className="secondary-action" href={`/api/orcamentos/${id}/pdf`} target="_blank" rel="noopener">Abrir PDF</a>
+            : status === "draft" && <a className="secondary-action" href={`/api/orcamentos/${id}/pdf`} target="_blank" rel="noopener">Prévia do PDF</a>}
           {(status === "sent" || status === "send_failed") && <ActionButton action={createRevision} id={id} label="Criar revisão" />}
           {status !== "deleted" && <ActionButton action={duplicateQuote} id={id} label="Duplicar" />}
           {canSend || status === "sent" ? <ActionButton action={cancelQuote} id={id} label="Cancelar" className="secondary-action danger-action" /> : null}
