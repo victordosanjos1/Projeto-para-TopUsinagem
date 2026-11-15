@@ -1,12 +1,27 @@
+"use client";
+import { useState, useTransition } from "react";
 import { FormEnterNext } from "@/app/components/form-enter-next";
 import { UFS, formatCnpj } from "@/lib/br";
 
 export type Customer = { id: string; company_name: string; contact_name: string; cnpj: string; city: string; state: string; country: string; emails: string[] };
 
-export function CustomerForm({ action, customer, submitLabel }: { action: (form: FormData) => Promise<void>; customer?: Customer; submitLabel: string }) {
+// O envio é feito manualmente (sem o reset automático do React): se o servidor
+// recusar algo (ex.: CNPJ inválido), o que foi digitado continua nos campos.
+export function CustomerForm({ action, customer, submitLabel }: { action: (form: FormData) => Promise<{ error: string } | undefined>; customer?: Customer; submitLabel: string }) {
+  const [pending, startTransition] = useTransition();
+  const [error, setError] = useState<string | null>(null);
+  function onSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const data = new FormData(event.currentTarget);
+    setError(null);
+    startTransition(async () => {
+      const result = await action(data);
+      if (result?.error) setError(result.error);
+    });
+  }
   return (
     <FormEnterNext>
-      <form action={action} className="customer-form">
+      <form onSubmit={onSubmit} className="customer-form">
         {customer && <input type="hidden" name="id" value={customer.id} />}
         <label className="full">Empresa *<input name="company_name" required defaultValue={customer?.company_name} autoComplete="organization" /></label>
         <label>Responsável *<input name="contact_name" required defaultValue={customer?.contact_name} autoComplete="name" /></label>
@@ -22,7 +37,8 @@ export function CustomerForm({ action, customer, submitLabel }: { action: (form:
           <textarea name="emails" required defaultValue={customer?.emails.join("\n")} placeholder={"compras@empresa.com.br\nengenharia@empresa.com.br"} />
           <small className="field-hint">Um por linha. O primeiro é o principal e vem marcado no envio.</small>
         </label>
-        <button className="primary-action">{submitLabel}</button>
+        {error && <p className="notice error full" role="alert">{error}</p>}
+        <button className="primary-action" disabled={pending}>{pending ? "Salvando..." : submitLabel}</button>
       </form>
     </FormEnterNext>
   );

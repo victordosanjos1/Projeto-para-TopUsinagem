@@ -50,7 +50,7 @@ export default async function Dashboard({ searchParams }: { searchParams: Promis
         {Object.entries(PERIODS).map(([value, label]) => <Link key={value} className={period === value ? "active" : ""} href={`/dashboard?periodo=${value}`}>{label}</Link>)}
       </nav>
       <div className="metrics">
-        <article><span>ORÇAMENTOS ENVIADOS</span><strong>{counted.length}</strong><small>{PERIODS[period].toLowerCase()}</small></article>
+        <article><span>ORÇAMENTOS FINALIZADOS</span><strong>{counted.length}</strong><small>{PERIODS[period].toLowerCase()}</small></article>
         <article><span>VALOR ORÇADO</span><strong>{money(total)}</strong><small>não é faturamento</small></article>
         <article><span>RASCUNHOS</span><strong>{drafts ?? 0}</strong><small><Link href="/orcamentos/lista?status=draft">ver rascunhos</Link></small></article>
         <article className={failed ? "attention" : ""}><span>AGUARDANDO REENVIO</span><strong>{failed ?? 0}</strong><small>{failed ? <Link href="/orcamentos/lista?status=send_failed">resolver agora</Link> : "nenhuma falha"}</small></article>

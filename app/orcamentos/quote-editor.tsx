@@ -2,6 +2,7 @@
 import { useRef, useState } from "react";
 import { ItemsEditor } from "./items-editor";
 import { FormEnterNext } from "@/app/components/form-enter-next";
+import { SubmitButton } from "@/app/components/submit-button";
 import { computeTotals, lineSubtotal, parseDecimal, type QuoteItemInput } from "@/lib/quote-math";
 import { date, deliveryText, discountText, freightLabel, money, paymentLabel } from "@/lib/format";
 
@@ -117,8 +118,8 @@ export function QuoteEditor({ clients, action, initial, defaultClientId }: { cli
             <div className="preview-actions">
               <button type="button" className="secondary-action" onClick={() => setPreview(null)}>← Voltar e editar</button>
               <div>
-                <button className="secondary-action" name="intent" value="draft">Salvar como rascunho</button>
-                <button className="primary-action" name="intent" value="finalize">Salvar e escolher destinatários →</button>
+                <SubmitButton className="secondary-action" name="intent" value="draft" pendingLabel="Salvando...">Salvar como rascunho</SubmitButton>
+                <SubmitButton name="intent" value="finalize" pendingLabel="Salvando...">Salvar e escolher destinatários →</SubmitButton>
               </div>
             </div>
             <article className="document-preview">

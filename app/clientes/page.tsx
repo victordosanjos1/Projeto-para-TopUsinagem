@@ -82,7 +82,8 @@ export default async function Customers({ searchParams }: { searchParams: Promis
         </article>
         <article className="panel" id="novo">
           <h2>Novo cliente</h2>
-          <CustomerForm action={createCustomer} submitLabel="Salvar cliente" />
+          {/* A chave muda a cada cadastro salvo: o formulário volta limpo. */}
+          <CustomerForm key={p.created ?? "novo"} action={createCustomer} submitLabel="Salvar cliente" />
         </article>
       </div>
     </AppShell>

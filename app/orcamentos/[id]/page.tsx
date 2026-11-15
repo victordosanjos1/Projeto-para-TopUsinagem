@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { cancelQuote, createRevision, deleteQuote, duplicateQuote, finalizeDraft, restoreQuote } from "../actions";
 import { AppShell } from "@/app/components/app-shell";
+import { SubmitButton } from "@/app/components/submit-button";
 import { date, dateTime, deliveryLogLabel, deliveryText, discountText, freightLabel, money, paymentLabel, quoteLabel, statusLabel, validityText } from "@/lib/format";
 
 type Item = { id: string; position: number; description: string; quantity: number; unit_price: number; subtotal: number };
@@ -17,7 +18,7 @@ const notices: Record<string, string> = {
 };
 
 function ActionButton({ action, id, label, className = "secondary-action" }: { action: (f: FormData) => Promise<void>; id: string; label: string; className?: string }) {
-  return <form action={action}><input type="hidden" name="id" value={id} /><button className={className}>{label}</button></form>;
+  return <form action={action}><input type="hidden" name="id" value={id} /><SubmitButton className={className}>{label}</SubmitButton></form>;
 }
 
 export default async function QuoteDetail({ params, searchParams }: { params: Promise<{ id: string }>; searchParams: Promise<Record<string, string | undefined>> }) {
@@ -121,7 +122,7 @@ export default async function QuoteDetail({ params, searchParams }: { params: Pr
                   {!emails.length && <p className="muted">Este cliente não tem e-mail cadastrado.</p>}
                 </div>
                 <label>Outros e-mails (opcional)<input name="extra_recipients" placeholder="separe por vírgula" /></label>
-                <button className="primary-action">{status === "draft" ? "Finalizar e enviar" : "Reenviar"}</button>
+                <SubmitButton pendingLabel="Gerando PDF e enviando...">{status === "draft" ? "Finalizar e enviar" : "Reenviar"}</SubmitButton>
               </form>
             </article>
           )}

@@ -127,10 +127,12 @@ export async function finalizeDraft(form: FormData) {
     else {
       pdf = await makeQuotePdf(quote);
       const pdfPath = await uploadQuotePdf(s, quote, pdf);
-      await s.from("quotes").update({ pdf_path: pdfPath }).eq("id", id);
+      const { error: saveError } = await s.from("quotes").update({ pdf_path: pdfPath }).eq("id", id);
+      if (saveError) throw new Error(`PDF guardado, mas não foi possível vinculá-lo ao orçamento: ${saveError.message}`);
     }
     const sent = await sendQuoteEmail({ recipients, quote, pdf });
-    await s.from("quotes").update({ status: "sent", sent_at: new Date().toISOString() }).eq("id", id);
+    const { error: statusError } = await s.from("quotes").update({ status: "sent", sent_at: new Date().toISOString() }).eq("id", id);
+    if (statusError) throw new Error(`E-mail enviado, mas não foi possível marcar como enviado: ${statusError.message}`);
     await s.from("quote_delivery_log").insert(recipients.map(recipient => sent.rejected.includes(recipient)
       ? { quote_id: id, recipient, provider_message_id: sent.messageId, status: "failed", error_message: "Destinatário recusado pelo servidor de e-mail" }
       : { quote_id: id, recipient, provider_message_id: sent.messageId, status: "accepted" }));
