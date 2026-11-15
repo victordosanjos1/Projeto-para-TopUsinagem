@@ -99,10 +99,10 @@ export default async function QuoteDetail({ params, searchParams }: { params: Pr
           <article className="panel">
             <h2>Histórico de envio</h2>
             {logs.length ? (
-              <table>
+              <div className="table-scroll"><table>
                 <thead><tr><th>Destinatário</th><th>Situação</th><th>Quando</th></tr></thead>
                 <tbody>{logs.map(log => <tr key={log.id}><td>{log.recipient}</td><td>{deliveryLogLabel[log.status] ?? log.status}{log.error_message && <><br /><small className="muted">{log.error_message}</small></>}</td><td>{dateTime(log.created_at)}</td></tr>)}</tbody>
-              </table>
+              </table></div>
             ) : <p className="muted">Ainda não houve tentativa de envio.</p>}
             <p className="muted"><small>“Aceito pelo provedor” significa que o servidor de e-mail recebeu a mensagem; não confirma que chegou à caixa do cliente.</small></p>
           </article>

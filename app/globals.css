@@ -289,7 +289,7 @@ tbody tr:hover { background: #fafbfc; }
   .clients-grid { grid-template-columns: 1fr; }
 }
 @media (max-width: 900px) {
-  .quote-form, .quote-detail { grid-template-columns: 1fr; }
+  .quote-form, .quote-detail { grid-template-columns: minmax(0, 1fr); }
   .quote-form aside, .quote-detail aside { position: static; }
   .settings-grid { grid-template-columns: 1fr; }
   .settings-wide { grid-column: auto; }
@@ -326,7 +326,7 @@ tbody tr:hover { background: #fafbfc; }
   .document-preview { padding: 22px; min-height: 0; }
   .document-preview header p { display: none; }
   .document-conditions { grid-template-columns: 1fr; }
-  .pdf-preview iframe { display: none; }
+  .pdf-preview iframe, .pdf-preview .section-label a { display: none; }
   .pdf-mobile-link { display: inline-flex; width: 100%; }
   .facts { grid-template-columns: 1fr; gap: 2px; }
   .facts dd { margin-bottom: 8px; }
