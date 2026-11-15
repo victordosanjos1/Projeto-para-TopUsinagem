@@ -13,7 +13,7 @@ Sistema interno de clientes e orçamentos, feito com Next.js, TypeScript e Supab
 ## Configuração
 
 1. Copie `.env.example` para `.env.local` e preencha as credenciais.
-2. Aplique, na ordem, `supabase/migrations/0001_initial_schema.sql` e `supabase/migrations/0002_production_support.sql` no Supabase SQL Editor.
+2. Aplique, na ordem, todos os arquivos de `supabase/migrations/` (0001, 0002, 0003, 0004...) no Supabase SQL Editor.
 3. No Supabase Auth, convide os usuários que terão acesso.
 4. Preencha as credenciais SMTP da Terra. Sem elas, o PDF é gerado, mas o orçamento fica como `Falha no envio` e o motivo aparece no histórico.
 5. Execute `npm.cmd run dev`.
