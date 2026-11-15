@@ -78,14 +78,14 @@ export default async function QuoteDetail({ params, searchParams }: { params: Pr
           </article>
           <article className="panel">
             <h2>Itens</h2>
-            <table>
-              <thead><tr><th>Descrição</th><th>Qtd.</th><th>Unitário</th><th>Subtotal</th></tr></thead>
-              <tbody>{items.map(item => <tr key={item.id}><td>{item.description}</td><td>{String(Number(item.quantity)).replace(".", ",")}</td><td>{money(item.unit_price)}</td><td>{money(item.subtotal)}</td></tr>)}</tbody>
-            </table>
-            {discount > 0 && <p className="muted" style={{ textAlign: "right" }}>Valor antes do desconto: {money(base)} · Desconto: {discountText(quote, discount)}</p>}
+            <div className="table-scroll"><table>
+              <thead><tr><th>Descrição</th><th className="num">Qtd.</th><th className="num">Unitário</th><th className="num">Subtotal</th></tr></thead>
+              <tbody>{items.map(item => <tr key={item.id}><td>{item.description}</td><td className="num">{String(Number(item.quantity)).replace(".", ",")}</td><td className="num nowrap">{money(item.unit_price)}</td><td className="num nowrap">{money(item.subtotal)}</td></tr>)}</tbody>
+            </table></div>
+            {discount > 0 && <p className="muted text-right">Valor antes do desconto: {money(base)} · Desconto: {discountText(quote, discount)}</p>}
             <div className="total">Total{discount > 0 ? " com desconto" : ""}: {money(quote.total)}</div>
           </article>
-          {quote.notes && <article className="panel"><h2>Observações</h2><p style={{ whiteSpace: "pre-wrap" }}>{quote.notes}</p></article>}
+          {quote.notes && <article className="panel"><h2>Observações</h2><p className="pre-wrap">{quote.notes}</p></article>}
           <article className="panel">
             <h2>Histórico de envio</h2>
             {logs.length ? (

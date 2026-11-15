@@ -131,8 +131,8 @@ export function QuoteEditor({ clients, action, initial, defaultClientId }: { cli
               <h3>Cliente</h3><strong>{preview.client}</strong>
               <h3>Itens</h3>
               <table>
-                <thead><tr><th>Descrição</th><th>Qtd.</th><th>Valor unitário</th><th>Subtotal</th></tr></thead>
-                <tbody>{preview.items.map((item, n) => <tr key={n}><td>{item.description}</td><td>{String(item.quantity).replace(".", ",")}</td><td>{money(item.unit)}</td><td>{money(lineSubtotal(item.quantity, item.unit))}</td></tr>)}</tbody>
+                <thead><tr><th>Descrição</th><th className="num">Qtd.</th><th className="num">Valor unitário</th><th className="num">Subtotal</th></tr></thead>
+                <tbody>{preview.items.map((item, n) => <tr key={n}><td>{item.description}</td><td className="num">{String(item.quantity).replace(".", ",")}</td><td className="num nowrap">{money(item.unit)}</td><td className="num nowrap">{money(lineSubtotal(item.quantity, item.unit))}</td></tr>)}</tbody>
               </table>
               <section className="document-conditions">
                 <p><strong>Frete:</strong> {freightLabel[preview.freightMode]}{preview.freightMode !== "customer_transport" && ` · ${money(preview.freight)}`}</p>

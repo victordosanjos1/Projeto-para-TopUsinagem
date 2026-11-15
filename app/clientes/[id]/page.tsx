@@ -48,8 +48,8 @@ export default async function EditCustomer({ params, searchParams }: { params: P
           <h2>Últimos orçamentos</h2>
           {quotes?.length ? (
             <div className="table-scroll"><table>
-              <thead><tr><th>Número</th><th>Data</th><th>Total</th><th>Situação</th></tr></thead>
-              <tbody>{(quotes as Quote[]).map(q => <tr key={q.id}><td><Link className="row-link" href={`/orcamentos/${q.id}`}>{quoteNumber(q)}</Link></td><td>{date(q.created_at)}</td><td>{money(q.total)}</td><td><span className={`badge ${q.status}`}>{statusLabel[q.status]}</span></td></tr>)}</tbody>
+              <thead><tr><th>Número</th><th>Data</th><th className="num">Total</th><th>Situação</th></tr></thead>
+              <tbody>{(quotes as Quote[]).map(q => <tr key={q.id}><td><Link className="row-link" href={`/orcamentos/${q.id}`}>{quoteNumber(q)}</Link></td><td>{date(q.created_at)}</td><td className="num nowrap">{money(q.total)}</td><td><span className={`badge ${q.status}`}>{statusLabel[q.status]}</span></td></tr>)}</tbody>
             </table></div>
           ) : <p className="empty">Nenhum orçamento para este cliente ainda.</p>}
         </article>
