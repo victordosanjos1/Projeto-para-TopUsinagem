@@ -1,0 +1,1236 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>TOP Usinagem — Protótipo</title>
+    <style>
+      :root {
+        --red: #d2232a;
+        --ink: #16181c;
+        --muted: #667085;
+        --line: #e5e7eb;
+        --bg: #f5f6f8;
+        --soft: #fff1f1;
+        --ok: #027a48;
+        --warn: #b54708;
+        --radius: 12px;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font:
+          14px/1.45 Arial,
+          Helvetica,
+          sans-serif;
+      }
+      .app {
+        display: flex;
+        min-height: 100vh;
+      }
+      .side {
+        width: 250px;
+        background: #111317;
+        color: #fff;
+        padding: 24px 14px;
+        position: fixed;
+        inset: 0 auto 0 0;
+      }
+      .brand {
+        padding: 2px 10px 28px;
+        font-size: 20px;
+        font-weight: 800;
+        letter-spacing: 0.3px;
+      }
+      .brand span {
+        color: #ef3a40;
+      }
+      .brand small {
+        display: block;
+        color: #a7adb7;
+        font-size: 10px;
+        letter-spacing: 2.1px;
+        margin-top: 1px;
+      }
+      .nav {
+        display: grid;
+        gap: 4px;
+      }
+      .nav button {
+        border: 0;
+        background: transparent;
+        color: #d4d7dd;
+        text-align: left;
+        padding: 12px 13px;
+        border-radius: 8px;
+        font: inherit;
+        cursor: pointer;
+      }
+      .nav button:hover,
+      .nav button.active {
+        background: #2a2e34;
+        color: #fff;
+      }
+      .nav button.active {
+        box-shadow: inset 3px 0 var(--red);
+      }
+      .side-foot {
+        position: absolute;
+        bottom: 22px;
+        left: 24px;
+        color: #a7adb7;
+        font-size: 12px;
+      }
+      .main {
+        margin-left: 250px;
+        width: calc(100% - 250px);
+      }
+      .top {
+        height: 72px;
+        background: #fff;
+        border-bottom: 1px solid var(--line);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 34px;
+      }
+      .crumb {
+        font-weight: 700;
+        font-size: 16px;
+      }
+      .user {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .avatar {
+        height: 34px;
+        width: 34px;
+        border-radius: 50%;
+        background: var(--red);
+        color: white;
+        display: grid;
+        place-items: center;
+        font-weight: 700;
+      }
+      .content {
+        padding: 30px 34px;
+        max-width: 1500px;
+        margin: auto;
+      }
+      .view {
+        display: none;
+      }
+      .view.active {
+        display: block;
+      }
+      .heading {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 18px;
+        margin-bottom: 24px;
+      }
+      .heading h1 {
+        font-size: 25px;
+        margin: 0 0 3px;
+      }
+      .heading p {
+        margin: 0;
+        color: var(--muted);
+      }
+      button,
+      .button {
+        font: inherit;
+      }
+      .primary,
+      .secondary,
+      .danger {
+        border: 0;
+        border-radius: 8px;
+        padding: 10px 14px;
+        font-weight: 700;
+        cursor: pointer;
+      }
+      .primary {
+        background: var(--red);
+        color: #fff;
+      }
+      .secondary {
+        background: #fff;
+        border: 1px solid #cbd0d8;
+        color: #30343b;
+      }
+      .danger {
+        background: #fff1f1;
+        color: #b42318;
+      }
+      .cards {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+        margin-bottom: 24px;
+      }
+      .card {
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        padding: 18px;
+        box-shadow: 0 1px 2px #10182808;
+      }
+      .card .label {
+        color: var(--muted);
+        font-size: 12px;
+        font-weight: 700;
+      }
+      .card .value {
+        font-size: 26px;
+        font-weight: 800;
+        margin: 8px 0;
+      }
+      .card .detail {
+        font-size: 12px;
+        color: var(--ok);
+      }
+      .panel {
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        padding: 20px;
+        margin-bottom: 18px;
+      }
+      .panel h2 {
+        font-size: 16px;
+        margin: 0 0 16px;
+      }
+      .toolbar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 17px;
+      }
+      .input,
+      select {
+        height: 38px;
+        padding: 0 10px;
+        border: 1px solid #cfd4dc;
+        border-radius: 7px;
+        background: #fff;
+        color: #24272d;
+        min-width: 150px;
+      }
+      .search {
+        min-width: 270px;
+        flex: 1;
+      }
+      table {
+        border-collapse: collapse;
+        width: 100%;
+      }
+      th {
+        text-align: left;
+        color: var(--muted);
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+        padding: 0 10px 10px;
+      }
+      td {
+        padding: 13px 10px;
+        border-top: 1px solid var(--line);
+      }
+      .link {
+        color: #a61c22;
+        font-weight: 700;
+        cursor: pointer;
+      }
+      .badge {
+        display: inline-block;
+        border-radius: 999px;
+        padding: 4px 8px;
+        font-size: 11px;
+        font-weight: 700;
+      }
+      .sent {
+        color: #027a48;
+        background: #ecfdf3;
+      }
+      .draft {
+        color: #344054;
+        background: #f2f4f7;
+      }
+      .fail {
+        color: #b54708;
+        background: #fffaeb;
+      }
+      .inactive {
+        color: #667085;
+        background: #f2f4f7;
+      }
+      .empty {
+        border: 1px dashed #c9ced7;
+        border-radius: 10px;
+        text-align: center;
+        padding: 48px 20px;
+        color: var(--muted);
+      }
+      .empty strong {
+        display: block;
+        color: #344054;
+        font-size: 16px;
+        margin-bottom: 5px;
+      }
+      .form {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 16px;
+      }
+      .field {
+        display: grid;
+        gap: 6px;
+      }
+      .field.full {
+        grid-column: 1/-1;
+      }
+      .field label {
+        font-weight: 700;
+        font-size: 12px;
+      }
+      .field input,
+      .field select,
+      .field textarea {
+        width: 100%;
+        border: 1px solid #cfd4dc;
+        border-radius: 7px;
+        padding: 10px;
+        font: inherit;
+        min-height: 40px;
+      }
+      .field textarea {
+        min-height: 82px;
+      }
+      .actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        margin-top: 20px;
+      }
+      .quote-grid {
+        display: grid;
+        grid-template-columns: 1fr 320px;
+        gap: 18px;
+      }
+      .item {
+        display: grid;
+        grid-template-columns: 1.6fr 0.55fr 0.75fr 0.75fr 30px;
+        gap: 10px;
+        align-items: end;
+        margin-bottom: 10px;
+      }
+      .item label {
+        font-size: 11px;
+        font-weight: 700;
+        color: var(--muted);
+      }
+      .item input {
+        width: 100%;
+        border: 1px solid #cfd4dc;
+        border-radius: 7px;
+        padding: 10px;
+      }
+      .total {
+        margin-top: 15px;
+        border-top: 1px solid var(--line);
+        padding-top: 14px;
+        text-align: right;
+        font-size: 17px;
+        font-weight: 800;
+      }
+      .summary-row {
+        display: flex;
+        justify-content: space-between;
+        margin: 11px 0;
+        color: #475467;
+      }
+      .summary-row.total-row {
+        border-top: 1px solid var(--line);
+        padding-top: 13px;
+        color: #111;
+        font-size: 18px;
+        font-weight: 800;
+      }
+      .notice {
+        border-left: 4px solid var(--red);
+        background: var(--soft);
+        padding: 12px 14px;
+        margin-bottom: 18px;
+        border-radius: 0 8px 8px 0;
+      }
+      .pdf {
+        max-width: 760px;
+        margin: auto;
+        border: 1px solid #ccd1d8;
+        background: white;
+        box-shadow: 0 4px 16px #1018281a;
+        padding: 42px;
+        min-height: 700px;
+      }
+      .pdfhead {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 3px solid var(--red);
+        padding-bottom: 18px;
+        gap: 20px;
+      }
+      .pdf-logo-wrap { width: 270px; height: 82px; overflow: hidden; position: relative; flex: 0 0 270px; }
+      .pdf-logo-wrap img { position: absolute; width: 307px; max-width: none; height: auto; left: -20px; top: -50px; }
+      .pdf-company { text-align: right; color: #34383f; font-size: 9px; line-height: 1.45; }
+      .pdf-company strong { font-size: 10px; color: #111317; }
+      .pdfbrand {
+        font-size: 22px;
+        font-weight: 900;
+      }
+      .pdfbrand span {
+        color: var(--red);
+      }
+      .pdf h2 {
+        margin: 30px 0 5px;
+        font-size: 17px;
+      }
+      .pdfinfo {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        color: #475467;
+        font-size: 12px;
+      }
+      .pdf table {
+        font-size: 12px;
+        margin-top: 22px;
+      }
+      .pdf .pdf-total {
+        text-align: right;
+        font-weight: 800;
+        font-size: 18px;
+        margin-top: 20px;
+      }
+      .states {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 10px;
+      }
+      .state {
+        border: 1px solid var(--line);
+        border-radius: 9px;
+        padding: 13px;
+        background: #fff;
+      }
+      .state strong {
+        display: block;
+        margin-bottom: 4px;
+      }
+      .hidden {
+        display: none;
+      }
+      @media (max-width: 820px) {
+        .side {
+          width: 62px;
+          padding: 20px 6px;
+        }
+        .brand {
+          font-size: 0;
+          padding: 2px 9px 25px;
+        }
+        .brand:before {
+          content: "T";
+          font-size: 24px;
+          color: #ef3a40;
+        }
+        .brand small,
+        .nav button span,
+        .side-foot {
+          display: none;
+        }
+        .nav button {
+          text-align: center;
+          padding: 13px 4px;
+        }
+        .nav button:before {
+          content: attr(data-icon);
+          font-size: 18px;
+        }
+        .main {
+          margin-left: 62px;
+          width: calc(100% - 62px);
+        }
+        .top,
+        .content {
+          padding-left: 18px;
+          padding-right: 18px;
+        }
+        .cards,
+        .quote-grid {
+          grid-template-columns: 1fr;
+        }
+        .form {
+          grid-template-columns: 1fr;
+        }
+        .item {
+          grid-template-columns: 1fr 1fr;
+        }
+        .item .remove {
+          display: none;
+        }
+        .toolbar .search {
+          min-width: 100%;
+        }
+        .states {
+          grid-template-columns: 1fr 1fr;
+        }
+        .pdf {
+          padding: 22px;
+          overflow: auto;
+        }
+        .pdfinfo {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app">
+      <aside class="side">
+        <div class="brand">
+          TOP <span>USINAGEM</span><small>ELETROEROSÃO A FIO</small>
+        </div>
+        <nav class="nav">
+          <button
+            class="active"
+            data-icon="⌂"
+            onclick="show('dashboard', this)"
+          >
+            <span>Painel</span></button
+          ><button data-icon="♙" onclick="show('clients', this)">
+            <span>Clientes</span></button
+          ><button data-icon="▤" onclick="show('quotes', this)">
+            <span>Orçamentos</span></button
+          ><button data-icon="⚙" onclick="show('settings', this)">
+            <span>Configurações</span>
+          </button>
+        </nav>
+        <div class="side-foot">Protótipo de aprovação<br />TOP Usinagem</div>
+      </aside>
+      <main class="main">
+        <header class="top">
+          <div class="crumb" id="crumb">Painel</div>
+          <div class="user">
+            <span>Manoel</span>
+            <div class="avatar">M</div>
+          </div>
+        </header>
+        <div class="content">
+          <section id="dashboard" class="view active">
+            <div class="heading">
+              <div>
+                <h1>Bom dia, Manoel</h1>
+                <p>Visão geral dos orçamentos da TOP Usinagem.</p>
+              </div>
+              <button class="primary" onclick="show('quote-editor')">
+                + Novo orçamento
+              </button>
+            </div>
+            <div class="cards">
+              <div class="card">
+                <div class="label">ORÇAMENTOS NO PERÍODO</div>
+                <div class="value">18</div>
+                <div class="detail">↑ 4 em relação ao período anterior</div>
+              </div>
+              <div class="card">
+                <div class="label">VALOR ORÇADO</div>
+                <div class="value">R$ 84.560,00</div>
+                <div class="detail">Somente documentos ativos</div>
+              </div>
+              <div class="card">
+                <div class="label">AGUARDANDO REENVIO</div>
+                <div class="value">1</div>
+                <div class="detail" style="color: #b54708">
+                  Verificar falha de e-mail
+                </div>
+              </div>
+            </div>
+            <div class="panel">
+              <h2>Orçamentos recentes</h2>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Número</th>
+                    <th>Cliente</th>
+                    <th>Data</th>
+                    <th>Total</th>
+                    <th>Situação</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="link" onclick="show('quote-preview')">
+                      03/2026
+                    </td>
+                    <td>Indústria Horizonte Ltda.</td>
+                    <td>14/11/2026</td>
+                    <td>R$ 8.420,00</td>
+                    <td><span class="badge sent">Enviado</span></td>
+                  </tr>
+                  <tr>
+                    <td>02/2026</td>
+                    <td>Metal Forte Ltda.</td>
+                    <td>12/11/2026</td>
+                    <td>R$ 3.600,00</td>
+                    <td><span class="badge sent">Enviado</span></td>
+                  </tr>
+                  <tr>
+                    <td>01/2026</td>
+                    <td>Usinagem Alfa Ltda.</td>
+                    <td>08/11/2026</td>
+                    <td>R$ 1.250,00</td>
+                    <td><span class="badge fail">Falha no envio</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+          <section id="clients" class="view">
+            <div class="heading">
+              <div>
+                <h1>Clientes</h1>
+                <p>Cadastre, pesquise e consulte o histórico comercial.</p>
+              </div>
+              <button class="primary" onclick="show('client-form')">
+                + Novo cliente
+              </button>
+            </div>
+            <div class="panel">
+              <div class="toolbar">
+                <input
+                  class="input search"
+                  placeholder="Pesquisar por empresa, responsável, e-mail ou CNPJ"
+                /><button class="secondary">Filtrar</button>
+              </div>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Empresa</th>
+                    <th>Responsável</th>
+                    <th>CNPJ</th>
+                    <th>Cidade/UF</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="link" onclick="show('client-history')">
+                      Indústria Horizonte Ltda.
+                    </td>
+                    <td>Carla Mendes</td>
+                    <td>12.345.678/0001-90</td>
+                    <td>Joinville/SC</td>
+                    <td><span class="badge sent">Ativo</span></td>
+                  </tr>
+                  <tr>
+                    <td>Metal Forte Ltda.</td>
+                    <td>Paulo Nunes</td>
+                    <td>98.765.432/0001-10</td>
+                    <td>Blumenau/SC</td>
+                    <td><span class="badge sent">Ativo</span></td>
+                  </tr>
+                  <tr>
+                    <td>Usinagem Alfa Ltda.</td>
+                    <td>Renata Luz</td>
+                    <td>45.321.987/0001-11</td>
+                    <td>Jaraguá do Sul/SC</td>
+                    <td><span class="badge inactive">Inativo</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="panel hidden" id="empty-sample">
+              <div class="empty">
+                <strong>Nenhum cliente encontrado</strong>Altere os filtros ou
+                cadastre um novo cliente.
+              </div>
+            </div>
+          </section>
+          <section id="client-form" class="view">
+            <div class="heading">
+              <div>
+                <h1>Novo cliente</h1>
+                <p>Os campos marcados com * são obrigatórios.</p>
+              </div>
+              <button class="secondary" onclick="show('clients')">
+                Cancelar
+              </button>
+            </div>
+            <div class="panel">
+              <div class="form">
+                <div class="field">
+                  <label>Empresa *</label
+                  ><input placeholder="Razão social ou nome fantasia" />
+                </div>
+                <div class="field">
+                  <label>CNPJ *</label
+                  ><input placeholder="00.000.000/0000-00" />
+                </div>
+                <div class="field">
+                  <label>Responsável *</label
+                  ><input placeholder="Nome da pessoa responsável" />
+                </div>
+                <div class="field">
+                  <label>País *</label><input value="Brasil" />
+                </div>
+                <div class="field full">
+                  <label>E-mail principal *</label
+                  ><input
+                    type="email"
+                    placeholder="contato@empresa.com.br"
+                  /><button class="secondary" style="justify-self: start">
+                    + Adicionar outro e-mail
+                  </button>
+                </div>
+                <div class="field">
+                  <label>Cidade *</label><input placeholder="Cidade" />
+                </div>
+                <div class="field">
+                  <label>Estado *</label
+                  ><select>
+                    <option>Selecione</option>
+                    <option>Santa Catarina</option>
+                  </select>
+                </div>
+              </div>
+              <div class="actions">
+                <button class="secondary" onclick="show('clients')">
+                  Cancelar</button
+                ><button
+                  class="primary"
+                  onclick="toast('Cliente salvo com sucesso.')"
+                >
+                  Salvar cliente
+                </button>
+              </div>
+            </div>
+          </section>
+          <section id="client-history" class="view">
+            <div class="heading">
+              <div>
+                <button class="secondary" onclick="show('clients')">
+                  ← Voltar
+                </button>
+                <h1 style="margin-top: 14px">Indústria Horizonte Ltda.</h1>
+                <p>Carla Mendes · contato@horizonte.exemplo · Joinville/SC</p>
+              </div>
+              <button class="secondary">Editar cliente</button>
+            </div>
+            <div class="cards">
+              <div class="card">
+                <div class="label">ORÇAMENTOS ATIVOS</div>
+                <div class="value">3</div>
+              </div>
+              <div class="card">
+                <div class="label">ÚLTIMO ORÇAMENTO</div>
+                <div class="value">03/2026</div>
+              </div>
+              <div class="card">
+                <div class="label">ÚLTIMO VALOR</div>
+                <div class="value">R$ 8.420,00</div>
+              </div>
+            </div>
+            <div class="panel">
+              <h2>Histórico de orçamentos</h2>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Número</th>
+                    <th>Emissão</th>
+                    <th>Total</th>
+                    <th>Situação</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="link" onclick="show('quote-preview')">
+                      03/2026
+                    </td>
+                    <td>14/11/2026</td>
+                    <td>R$ 8.420,00</td>
+                    <td><span class="badge sent">Enviado</span></td>
+                  </tr>
+                  <tr>
+                    <td>02/2026 — Revisão 2</td>
+                    <td>03/10/2026</td>
+                    <td>R$ 6.900,00</td>
+                    <td><span class="badge sent">Enviado</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+          <section id="quotes" class="view">
+            <div class="heading">
+              <div>
+                <h1>Orçamentos</h1>
+                <p>Encontre documentos pelo cliente, número ou período.</p>
+              </div>
+              <button class="primary" onclick="show('quote-editor')">
+                + Novo orçamento
+              </button>
+            </div>
+            <div class="panel">
+              <div class="toolbar">
+                <input
+                  class="input search"
+                  placeholder="Cliente ou número do orçamento"
+                /><select>
+                  <option>Data de finalização/envio</option>
+                  <option>Data de criação</option></select
+                ><select>
+                  <option>Últimos 30 dias</option>
+                  <option>Últimos 60 dias</option>
+                  <option>Últimos 90 dias</option>
+                  <option>Período personalizado</option></select
+                ><button class="secondary">Aplicar filtros</button>
+              </div>
+              <div class="notice">
+                <strong>18 orçamentos encontrados</strong> · Valor orçado:
+                <strong>R$ 84.560,00</strong>
+              </div>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Número</th>
+                    <th>Cliente</th>
+                    <th>Data</th>
+                    <th>Total</th>
+                    <th>Situação</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="link" onclick="show('quote-preview')">
+                      03/2026
+                    </td>
+                    <td>Indústria Horizonte Ltda.</td>
+                    <td>14/11/2026</td>
+                    <td>R$ 8.420,00</td>
+                    <td><span class="badge sent">Enviado</span></td>
+                  </tr>
+                  <tr>
+                    <td>02/2026 — Rev. 2</td>
+                    <td>Indústria Horizonte Ltda.</td>
+                    <td>03/10/2026</td>
+                    <td>R$ 6.900,00</td>
+                    <td><span class="badge sent">Enviado</span></td>
+                  </tr>
+                  <tr>
+                    <td>01/2026</td>
+                    <td>Usinagem Alfa Ltda.</td>
+                    <td>08/11/2026</td>
+                    <td>R$ 1.250,00</td>
+                    <td><span class="badge fail">Falha no envio</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+          <section id="quote-editor" class="view">
+            <div class="heading">
+              <div>
+                <h1>Novo orçamento</h1>
+                <p>
+                  Salve como rascunho ou finalize para gerar e enviar o PDF.
+                </p>
+              </div>
+              <button class="secondary" onclick="show('quotes')">
+                Cancelar
+              </button>
+            </div>
+            <div class="quote-grid">
+              <div>
+                <div class="panel">
+                  <h2>Cliente</h2>
+                  <div class="form">
+                    <div class="field full">
+                      <label>Selecionar cliente *</label
+                      ><select>
+                        <option>Indústria Horizonte Ltda.</option>
+                        <option>Metal Forte Ltda.</option></select
+                      ><small
+                        >Os dados cadastrados serão copiados para este orçamento
+                        ao finalizar.</small
+                      >
+                    </div>
+                  </div>
+                </div>
+                <div class="panel">
+                  <h2>Itens</h2>
+                  <div class="item">
+                    <div>
+                      <label>Descrição *</label
+                      ><input value="Matriz de corte" />
+                    </div>
+                    <div><label>Quantidade *</label><input value="20" /></div>
+                    <div>
+                      <label>Valor unitário *</label><input value="R$ 100,00" />
+                    </div>
+                    <div>
+                      <label>Subtotal</label
+                      ><input value="R$ 2.000,00" disabled />
+                    </div>
+                    <button class="danger remove">×</button>
+                  </div>
+                  <button class="secondary">+ Adicionar peça</button>
+                  <div class="total">Total dos itens: R$ 2.000,00</div>
+                </div>
+                <div class="panel">
+                  <h2>Observações</h2>
+                  <div class="field">
+                    <textarea
+                      id="quote-observations"
+                      placeholder="Informações que aparecerão no PDF (opcional)"
+                    ></textarea>
+                  </div>
+                </div>
+              </div>
+              <aside>
+                <div class="panel">
+                  <h2>Condições comerciais</h2>
+                  <div class="field">
+                    <label>Validade *</label
+                    ><select>
+                      <option>15 dias</option>
+                      <option>Definir data final</option>
+                    </select>
+                  </div>
+                  <div class="field">
+                    <label>Prazo de entrega *</label
+                    ><select>
+                      <option>3 dias úteis</option>
+                      <option>1 dia útil</option>
+                      <option>2 dias úteis</option>
+                      <option>4 dias úteis</option>
+                      <option>5 dias úteis</option>
+                      <option>A combinar</option>
+                    </select>
+                  </div>
+                  <div class="field">
+                    <label>Frete *</label
+                    ><select>
+                      <option>CIF</option>
+                      <option>FOB</option>
+                      <option>Transporte próprio do cliente</option>
+                    </select>
+                  </div>
+                  <div class="field">
+                    <label>Valor do frete</label><input value="R$ 180,00" />
+                  </div>
+                  <div class="field">
+                    <label>Desconto</label>
+                    <div style="display: flex; gap: 8px">
+                      <select id="discount-type" style="min-width: 76px" onchange="updateDiscount()"><option value="money">R$</option><option value="percent">%</option></select>
+                      <input id="discount-value" value="0,00" aria-label="Valor do desconto" oninput="updateDiscount()" />
+                    </div>
+                  </div>
+                  <div class="field">
+                    <label>Condição de pagamento *</label
+                    ><select>
+                      <option>28 dias após a entrega</option>
+                      <option>À vista</option>
+                      <option>28/56 dias após a entrega</option>
+                      <option>28/56/84 dias após a entrega</option>
+                      <option>A combinar</option>
+                    </select>
+                  </div>
+                  <div class="summary-row">
+                    <span>Itens</span><strong>R$ 2.000,00</strong>
+                  </div>
+                  <div class="summary-row">
+                    <span>Frete</span><strong>R$ 180,00</strong>
+                  </div>
+                  <div id="discount-summary" class="summary-row hidden">
+                    <span>Desconto</span><strong>R$ 0,00</strong>
+                  </div>
+                  <div class="summary-row total-row">
+                    <span>Total</span><span id="quote-total">R$ 2.180,00</span>
+                  </div>
+                </div>
+                <div class="panel">
+                  <h2>Finalização</h2>
+                  <p style="color: var(--muted); font-size: 12px">
+                    O número será atribuído, o PDF será salvo privadamente e
+                    enviado para os e-mails selecionados.
+                  </p>
+                  <button
+                    class="primary"
+                    style="width: 100%"
+                    onclick="prepareFinalization()"
+                  >
+                    Finalizar e enviar</button
+                  ><button
+                    class="secondary"
+                    style="width: 100%; margin-top: 9px"
+                    onclick="toast('Rascunho salvo.')"
+                  >
+                    Salvar rascunho
+                  </button>
+                </div>
+              </aside>
+            </div>
+          </section>
+          <section id="send-confirm" class="view">
+            <div class="heading">
+              <div>
+                <h1>Confirmar finalização</h1>
+                <p>Confira os dados antes de gerar e enviar o documento.</p>
+              </div>
+            </div>
+            <div class="panel" style="max-width: 720px">
+              <div class="notice">
+                <strong>Você está prestes a finalizar o orçamento.</strong
+                ><br />Ele receberá o número 03/2026, terá um PDF privado gerado
+                e será enviado automaticamente.
+              </div>
+              <div class="form">
+                <div class="field full">
+                  <label>Destinatários</label
+                  ><label
+                    ><input type="checkbox" checked />
+                    contato@horizonte.exemplo</label
+                  ><label
+                    ><input type="checkbox" checked />
+                    compras@horizonte.exemplo</label
+                  >
+                </div>
+              </div>
+              <div class="actions">
+                <button class="secondary" onclick="show('quote-editor')">
+                  Voltar e editar</button
+                ><button
+                  class="primary"
+                  onclick="
+                    show('quote-preview');
+                    toast('Orçamento finalizado e enviado com sucesso.');
+                  "
+                >
+                  Confirmar envio
+                </button>
+              </div>
+            </div>
+          </section>
+          <section id="quote-preview" class="view">
+            <div class="heading">
+              <div>
+                <button class="secondary" onclick="show('quotes')">
+                  ← Voltar à lista
+                </button>
+                <h1 style="margin-top: 14px">Orçamento 03/2026</h1>
+                <p>
+                  <span class="badge sent">Enviado em 14/11/2026 às 10:32</span>
+                  para 2 destinatários
+                </p>
+              </div>
+              <div style="display: flex; gap: 8px">
+                <button class="secondary">Baixar PDF</button
+                ><button class="primary">Reenviar e-mail</button>
+              </div>
+            </div>
+            <div class="pdf">
+              <div class="pdfhead">
+                <div class="pdf-logo-wrap"><img src="assets/logo-top-usinagem.png" alt="Logo TOP Usinagem" /></div>
+                <div class="pdf-company">
+                  <strong>TOP USINAGEM - Eletroerosão a Fio Ltda.</strong><br />
+                  Rua Dona Francisca, n° 11179 - Distrito Industrial Norte<br />
+                  Joinville - SC - CEP 89219-615<br />
+                  Fone: (47) 3435-2683 - top@topusinagem.com<br />
+                  CNPJ: 10.481.458/0001-63 - I.E.: 25.610.677-0
+                </div>
+              </div>
+              <div style="display:flex;justify-content:space-between;align-items:end;margin-top:18px">
+                <strong style="font-size:17px">PLANILHA DE ORÇAMENTO</strong>
+                <div style="text-align:right;font-size:12px"><strong>ORÇAMENTO 03/2026</strong><br />Emissão: 14/11/2026<br />Validade: 15 dias</div>
+              </div>
+              <h2>Cliente</h2>
+              <div class="pdfinfo">
+                <div>
+                  <strong>Indústria Horizonte Ltda.</strong><br />Carla
+                  Mendes<br />12.345.678/0001-90
+                </div>
+                <div>Joinville/SC · Brasil<br />contato@horizonte.exemplo</div>
+              </div>
+              <h2>Itens</h2>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Descrição</th>
+                    <th>Qtd.</th>
+                    <th>Valor unitário</th>
+                    <th>Subtotal</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Matriz de corte</td>
+                    <td>20</td>
+                    <td>R$ 100,00</td>
+                    <td>R$ 2.000,00</td>
+                  </tr>
+                </tbody>
+              </table>
+              <div class="pdfinfo" style="margin-top: 25px">
+                <div>
+                  <strong>Frete:</strong> CIF · R$ 180,00<br /><strong
+                    >Entrega:</strong
+                  >
+                  3 dias úteis
+                </div>
+                <div>
+                  <strong>Pagamento:</strong><br />28 dias após a entrega
+                </div>
+              </div>
+              <div id="pdf-discount" class="hidden" style="text-align:right;margin-top:12px;font-size:13px">DESCONTO: <strong id="pdf-discount-value"></strong></div>
+              <div class="pdf-total">TOTAL: <span id="pdf-total-value">R$ 2.180,00</span></div>
+              <p
+                id="pdf-observations"
+                class="hidden"
+                style="
+                  border-top: 1px solid #ddd;
+                  padding-top: 16px;
+                  font-size: 12px;
+                "
+              >
+                <strong>Observações:</strong> <span id="pdf-observations-text"></span>
+              </p>
+            </div>
+          </section>
+          <section id="settings" class="view">
+            <div class="heading">
+              <div>
+                <h1>Configurações</h1>
+                <p>Itens necessários ao funcionamento aprovado.</p>
+              </div>
+            </div>
+            <div class="panel">
+              <h2>Envio de e-mail</h2>
+              <div class="form">
+                <div class="field">
+                  <label>Remetente inicial</label
+                  ><input value="top@topusinagem.com" disabled />
+                </div>
+                <div class="field">
+                  <label>Serviço</label><input value="Terra" disabled />
+                </div>
+              </div>
+              <p style="color: var(--muted); font-size: 12px">
+                As credenciais serão configuradas de forma segura antes da
+                publicação.
+              </p>
+            </div>
+            <div class="panel">
+              <h2>Estados de orçamento</h2>
+              <div class="states">
+                <div class="state">
+                  <strong>Rascunho</strong>Sem número e sem envio.
+                </div>
+                <div class="state">
+                  <strong>Enviado</strong>PDF gerado e provedor aceitou o envio.
+                </div>
+                <div class="state">
+                  <strong>Falha</strong>Permite reenvio controlado.
+                </div>
+                <div class="state">
+                  <strong>Cancelado</strong>Preservado no histórico.
+                </div>
+                <div class="state">
+                  <strong>Excluído</strong>Oculto e recuperável.
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+      </main>
+    </div>
+    <div
+      id="toast"
+      style="
+        position: fixed;
+        right: 22px;
+        bottom: 22px;
+        background: #1c733f;
+        color: white;
+        padding: 13px 16px;
+        border-radius: 8px;
+        display: none;
+        font-weight: 700;
+      "
+    ></div>
+    <script>
+      const names = {
+        dashboard: "Painel",
+        clients: "Clientes",
+        "client-form": "Clientes",
+        "client-history": "Clientes",
+        quotes: "Orçamentos",
+        "quote-editor": "Novo orçamento",
+        "send-confirm": "Finalizar orçamento",
+        "quote-preview": "Detalhes do orçamento",
+        settings: "Configurações",
+      };
+      function show(id, button) {
+        document
+          .querySelectorAll(".view")
+          .forEach((v) => v.classList.remove("active"));
+        document.getElementById(id).classList.add("active");
+        document.getElementById("crumb").textContent =
+          names[id] || "TOP Usinagem";
+        document
+          .querySelectorAll(".nav button")
+          .forEach((b) => b.classList.remove("active"));
+        if (button) button.classList.add("active");
+        window.scrollTo(0, 0);
+      }
+      function prepareFinalization() {
+        updateDiscount();
+        const observation = document.getElementById("quote-observations").value.trim();
+        document.getElementById("pdf-observations-text").textContent = observation;
+        document.getElementById("pdf-observations").classList.toggle("hidden", !observation);
+        show("send-confirm");
+      }
+      function updateDiscount() {
+        const raw = document.getElementById("discount-value").value.trim();
+        const parsed = Number(raw.replace(/\./g, "").replace(",", ".")) || 0;
+        const isPercent = document.getElementById("discount-type").value === "percent";
+        const base = 2180;
+        const discount = isPercent ? base * parsed / 100 : parsed;
+        const safeDiscount = Math.max(0, Math.min(base, discount));
+        const currency = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(safeDiscount);
+        const total = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(base - safeDiscount);
+        const hasDiscount = safeDiscount > 0;
+        const summary = document.getElementById("discount-summary");
+        summary.classList.toggle("hidden", !hasDiscount);
+        summary.querySelector("strong").textContent = currency;
+        document.getElementById("quote-total").textContent = total;
+        document.getElementById("pdf-total-value").textContent = total;
+        document.getElementById("pdf-discount").classList.toggle("hidden", !hasDiscount);
+        document.getElementById("pdf-discount-value").textContent = currency;
+      }
+      function toast(text) {
+        const t = document.getElementById("toast");
+        t.textContent = text;
+        t.style.display = "block";
+        setTimeout(() => (t.style.display = "none"), 2800);
+      }
+    </script>
+  </body>
+</html>

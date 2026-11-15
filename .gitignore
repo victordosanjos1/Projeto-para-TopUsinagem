@@ -1,0 +1,9 @@
+node_modules/
+.next/
+.next-build/
+.env*.local
+!.env.example
+tmp/
+*.tsbuildinfo
+next-env.d.ts
+.omc/
